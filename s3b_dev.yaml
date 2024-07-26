@@ -481,7 +481,7 @@ sensor:
     id: wifi_percent
     filters:
       - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
-    unit_of_measurement: "Signal %"
+    unit_of_measurement: "%"
     entity_category: "diagnostic"
     device_class: ""    
 text_sensor:
@@ -535,7 +535,9 @@ text_sensor:
  
 i2s_audio:
   - id: i2s_shared
-    i2s_lrclk_pin: GPIO45
+    i2s_lrclk_pin:
+      number: GPIO45
+      ignore_strapping_warning: true
     i2s_bclk_pin: GPIO17
     i2s_mclk_pin: GPIO2
     access_mode: duplex
@@ -551,7 +553,9 @@ adf_pipeline:
       i2c_id: bus_a
       model: es8311
       address: 0x18
-      enable_pin: GPIO46
+      enable_pin:
+        number: GPIO46
+        ignore_strapping_warning: true
     sample_rate: 16000
     bits_per_sample: 16bit
     fixed_settings: true
@@ -1065,7 +1069,7 @@ display:
           it.printf(160, 125, id(my_font5), light_blue, TextAlign::CENTER, "Host Name");
           it.printf(160, 145, id(my_font5), yellow, TextAlign::CENTER, "${name}.local");
           it.printf(160, 175, id(my_font5), light_blue, TextAlign::CENTER, "Device Uptime");
-          it.printf(160, 195, id(my_font5), yellow, TextAlign::CENTER, "%.fsecs", id(up_sens).state);
+          it.printf(160, 195, id(my_font5), yellow, TextAlign::CENTER, "%.f secs", id(up_sens).state);
           it.printf(40, 210, id(my_font5), light_blue, TextAlign::LEFT, "Battery Level");
           it.printf(265, 210, id(my_font5), yellow, TextAlign::RIGHT, "%.f%%", id(battery_percent).state);          
           
@@ -1400,8 +1404,8 @@ display:
           it.printf(160, 145, id(my_font5), yellow, TextAlign::CENTER, "%s", id(connected_bssid).state.c_str());
           it.printf(160, 175, id(my_font5), light_blue, TextAlign::CENTER, "Device MAC");
           it.printf(160, 195, id(my_font5), yellow, TextAlign::CENTER, "%s", id(device_mac).state.c_str());
-          it.printf(40, 210, id(my_font5), light_blue, TextAlign::LEFT, "Signal Strength");
-          it.printf(265, 210, id(my_font5), yellow, TextAlign::RIGHT, "%.f%%", id(wifi_percent).state);  
+          it.printf(25, 210, id(my_font5), light_blue, TextAlign::LEFT, "Signal Strength ");
+          it.printf(265, 210, id(my_font5), yellow, TextAlign::RIGHT, "%.f %%", id(wifi_percent).state); 
           
           
 i2c:
@@ -1426,7 +1430,9 @@ touchscreen:
   platform: gt911
   i2c_id: bus_a
   id: gt911_touchscreen
-  interrupt_pin: GPIO3
+  interrupt_pin:
+    number: GPIO3
+    ignore_strapping_warning: true
   on_touch:
     - lambda: id(led).turn_on().set_brightness(1.0).perform();
     - script.execute: saver_enabled
@@ -1440,6 +1446,7 @@ binary_sensor:
     pin:
       number: GPIO0
       mode: INPUT_PULLUP
+      ignore_strapping_warning: true
       inverted: true
     on_press:
       - light.toggle: led
